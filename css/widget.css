@@ -1,1 +1,19 @@
 /* This stylesheet is used to style the public view of the widget. */
+
+.widget-news-scroller ul{
+	padding: 0px;
+	margin: 0px;
+}
+
+li.wns-item{
+	display: block;
+	float: left;
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+
+.wns-item-img{
+	margin-bottom: 10px;
+	clear: both;
+}

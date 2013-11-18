@@ -1,13 +1,13 @@
 <?php
 /*
-Plugin Name: TODO
-Plugin URI: TODO
-Description: TODO
+Plugin Name: Widget News Scroller
+Plugin URI: http://about.me/alessandro.mignogna
+Description: A widget to display some news with jquery scroll
 Version: 1.0
-Author: TODO
-Author URI: TODO
-Author Email: TODO
-Text Domain: widget-name-locale
+Author: Mamuork
+Author URI: http://about.me/alessandro.mignogna
+Author Email: mamuork@gmail.com
+Text Domain: widget-news-scroller
 Domain Path: /lang/
 Network: false
 License: GPLv2 or later
@@ -29,8 +29,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-// TODO: change 'Widget_Name' to the name of your plugin
-class Widget_Name extends WP_Widget {
+/*----------------------------------------------------------------------------*
+ * Config file with constants and variables
+ *----------------------------------------------------------------------------*/
+
+/*
+ *
+ */
+require_once( plugin_dir_path( __FILE__ ) . '/config.php' );
+
+
+class Widget_News_Scroller extends WP_Widget {
 
 	/*--------------------------------------------------*/
 	/* Constructor
@@ -53,10 +62,10 @@ class Widget_Name extends WP_Widget {
 		// TODO:	replace 'widget-name-locale' to be named more plugin specific. Other instances exist throughout the code, too.
 		parent::__construct(
 			'widget-name-id',
-			__( 'Widget Name', 'widget-name-locale' ),
+			__( 'Widget News Scroller', 'widget-news-scroller' ),
 			array(
-				'classname'		=>	'widget-name-class',
-				'description'	=>	__( 'Short description of the widget goes here.', 'widget-name-locale' )
+				'classname'		=>	'widget-name-scroller',
+				'description'	=>	__( 'Short description of the widget goes here.', 'widget-news-scroller' )
 			)
 		);
 
@@ -104,7 +113,10 @@ class Widget_Name extends WP_Widget {
 
 		$instance = $old_instance;
 
-		// TODO:	Here is where you update your widget's old values with the new, incoming values
+		$instance["showposts"] = strip_tags( $new_instance['showposts'] );
+		$instance["excerptlength"] = strip_tags( $new_instance['excerptlength'] );
+		$instance["thumbnail"] = strip_tags( $new_instance['thumbnail'] );
+		$instance["thumbnailsize"] = strip_tags( $new_instance['thumbnailsize'] );
 
 		return $instance;
 
@@ -117,9 +129,17 @@ class Widget_Name extends WP_Widget {
 	 */
 	public function form( $instance ) {
 
-    	// TODO:	Define default values for your variables
+		/* Impostazioni di default del widget */
+        $default = array(
+            'showposts' => 3,
+            'excerptlength' => 50,
+            'thumbnail' => 1,
+            'thumbnailsize' => 'thumbnail',
+
+        );
+		
 		$instance = wp_parse_args(
-			(array) $instance
+			(array) $instance, $default
 		);
 
 		// TODO:	Store the values of the widget in their own variable
@@ -139,7 +159,7 @@ class Widget_Name extends WP_Widget {
 	public function widget_textdomain() {
 
 		// TODO be sure to change 'widget-name' to the name of *your* plugin
-		load_plugin_textdomain( 'widget-name-locale', false, plugin_dir_path( __FILE__ ) . '/lang/' );
+		load_plugin_textdomain( 'widget-news-scroller', false, plugin_dir_path( __FILE__ ) . '/lang/' );
 
 	} // end widget_textdomain
 
@@ -149,7 +169,7 @@ class Widget_Name extends WP_Widget {
 	 * @param		boolean	$network_wide	True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public function activate( $network_wide ) {
-		// TODO define activation functionality here
+
 	} // end activate
 
 	/**
@@ -167,7 +187,7 @@ class Widget_Name extends WP_Widget {
 	public function register_admin_styles() {
 
 		// TODO:	Change 'widget-name' to the name of your plugin
-		wp_enqueue_style( 'widget-name-admin-styles', plugins_url( 'widget-name/css/admin.css' ) );
+		wp_enqueue_style( 'widget-news-scroller-admin-styles', plugins_url( 'widget-news-scroller/css/admin.css' ) );
 
 	} // end register_admin_styles
 
@@ -177,7 +197,7 @@ class Widget_Name extends WP_Widget {
 	public function register_admin_scripts() {
 
 		// TODO:	Change 'widget-name' to the name of your plugin
-		wp_enqueue_script( 'widget-name-admin-script', plugins_url( 'widget-name/js/admin.js' ), array('jquery') );
+		wp_enqueue_script( 'widget-news-scroller-admin-script', plugins_url( 'widget-news-scroller/js/admin.js' ), array('jquery') );
 
 	} // end register_admin_scripts
 
@@ -187,7 +207,7 @@ class Widget_Name extends WP_Widget {
 	public function register_widget_styles() {
 
 		// TODO:	Change 'widget-name' to the name of your plugin
-		wp_enqueue_style( 'widget-name-widget-styles', plugins_url( 'widget-name/css/widget.css' ) );
+		wp_enqueue_style( 'widget-news-scroller-widget-styles', plugins_url( 'widget-news-scroller/css/widget.css' ) );
 
 	} // end register_widget_styles
 
@@ -197,11 +217,12 @@ class Widget_Name extends WP_Widget {
 	public function register_widget_scripts() {
 
 		// TODO:	Change 'widget-name' to the name of your plugin
-		wp_enqueue_script( 'widget-name-script', plugins_url( 'widget-name/js/widget.js' ), array('jquery') );
+		wp_enqueue_script( 'jquery.carouFredSel-6.2.1-packed', plugins_url( 'widget-news-scroller/js/jquery.carouFredSel-6.2.1-packed.js' ), array('jquery') );
+		wp_enqueue_script( 'widget-news-scroller-script', plugins_url( 'widget-news-scroller/js/widget.js' ), array('jquery') );
 
 	} // end register_widget_scripts
 
 } // end class
 
 // TODO:	Remember to change 'Widget_Name' to match the class name definition
-add_action( 'widgets_init', create_function( '', 'register_widget("Widget_Name");' ) );
+add_action( 'widgets_init', create_function( '', 'register_widget("Widget_News_Scroller");' ) );
