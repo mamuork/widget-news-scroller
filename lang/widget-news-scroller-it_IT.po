@@ -1,0 +1,85 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Widget Boilerplate\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-11-20 16:08+0100\n"
+"PO-Revision-Date: 2013-11-20 16:17+0100\n"
+"Last-Translator: Mamuork <mamuork@gmail.com>\n"
+"Language-Team: Mamuork <mamuork@gmail.com>\n"
+"Language: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.7\n"
+"Plural-Forms: nplurals=2; plural=n>1;\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../widget-news-scroller.php:65
+msgid "Widget News Scroller"
+msgstr ""
+
+#: ../widget-news-scroller.php:68
+msgid ""
+"A powerful widget to show news in carousel mode. Supports custom post types."
+msgstr ""
+"Un potente widget per mostrare news attraverso uno slider jquery. Supporta i "
+"custom post type."
+
+#: ../views/admin.php:9
+msgid "Widget title"
+msgstr "Titolo"
+
+#: ../views/admin.php:14
+msgid "Post type"
+msgstr "Post type"
+
+#: ../views/admin.php:23
+msgid "Category"
+msgstr "Categoria"
+
+#: ../views/admin.php:33
+msgid "Number of items"
+msgstr "Numero di elementi"
+
+#: ../views/admin.php:38
+msgid "Length of excerpt"
+msgstr "Lunghezza del riassunto"
+
+#: ../views/admin.php:43
+msgid "Display thumbnail"
+msgstr "Mostrare l'immagine in evidenza"
+
+#: ../views/admin.php:45
+msgid "Yes"
+msgstr "Si"
+
+#: ../views/admin.php:46
+msgid "No"
+msgstr "No"
+
+#: ../views/admin.php:52
+msgid "Thumbnail size"
+msgstr "Dimensioni immagine in evidenza"
+
+#: ../views/admin.php:61
+msgid "Archive URL"
+msgstr "URL archivio"
+
+#: ../views/admin.php:61
+msgid "Leave blank if you don't want use it"
+msgstr "Lascialo in bianco se non intendi utilizzarlo"
+
+#: ../views/widget.php:41
+msgid "&lt; prev"
+msgstr "&lt; precedente"
+
+#: ../views/widget.php:42
+msgid "next &gt;"
+msgstr "successivo &gt;"
+
+#: ../views/widget.php:44
+msgid "Go to archive &gt;"
+msgstr "Vai all'archivio &gt;"

@@ -3,7 +3,7 @@
 Plugin Name: Widget News Scroller
 Plugin URI: http://about.me/alessandro.mignogna
 Description: A widget to display some news with jquery scroll
-Version: 1.0
+Version: 1.0.1
 Author: Mamuork
 Author URI: http://about.me/alessandro.mignogna
 Author Email: mamuork@gmail.com
@@ -13,7 +13,7 @@ Network: false
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Copyright 2013 TODO (email@domain.com)
+Copyright 2013 (mamuork@gmail.com)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -61,11 +61,11 @@ class Widget_News_Scroller extends WP_Widget {
 		// TODO:	update classname and description
 		// TODO:	replace 'widget-name-locale' to be named more plugin specific. Other instances exist throughout the code, too.
 		parent::__construct(
-			'widget-name-id',
+			'widget-news-scroller',
 			__( 'Widget News Scroller', 'widget-news-scroller' ),
 			array(
 				'classname'		=>	'widget-name-scroller',
-				'description'	=>	__( 'Short description of the widget goes here.', 'widget-news-scroller' )
+				'description'	=>	__( 'A powerful widget to show news in carousel mode. Supports custom post types.', 'widget-news-scroller' )
 			)
 		);
 
@@ -113,10 +113,14 @@ class Widget_News_Scroller extends WP_Widget {
 
 		$instance = $old_instance;
 
+		$instance["title"] = strip_tags( $new_instance['title'] );		
+		$instance["posttype"] = strip_tags( $new_instance['posttype'] );
+		$instance["category"] = strip_tags( $new_instance['category'] );
 		$instance["showposts"] = strip_tags( $new_instance['showposts'] );
 		$instance["excerptlength"] = strip_tags( $new_instance['excerptlength'] );
 		$instance["thumbnail"] = strip_tags( $new_instance['thumbnail'] );
 		$instance["thumbnailsize"] = strip_tags( $new_instance['thumbnailsize'] );
+		$instance["archiveurl"] = strip_tags( $new_instance['archiveurl'] );
 
 		return $instance;
 
@@ -128,22 +132,66 @@ class Widget_News_Scroller extends WP_Widget {
 	 * @param	array	instance	The array of keys and values for the widget.
 	 */
 	public function form( $instance ) {
-
 		/* Impostazioni di default del widget */
         $default = array(
-            'showposts' => 3,
-            'excerptlength' => 50,
-            'thumbnail' => 1,
-            'thumbnailsize' => 'thumbnail',
-
-        );
+        	'title' => '',
+			'posttype' => 'post',
+			'category' => 1,
+			'showposts' => 3,
+			'excerptlength' => 50,
+			'thumbnail' => 1,
+			'thumbnailsize' => 'thumbnail',
+			'archiveurl' => ''
+		);     
 		
-		$instance = wp_parse_args(
-			(array) $instance, $default
-		);
-
-		// TODO:	Store the values of the widget in their own variable
-
+		$instance = wp_parse_args( (array) $instance, $default );
+		
+		if ( empty( $instance['title'] ) ) {
+			$instance['title'] = $default['title'];
+		}
+		if ( empty( $instance['posttype'] ) ) {
+			$instance['posttype'] = $default['posttype'];
+		}
+		if ( empty( $instance['category'] ) ) {
+			$instance['category'] = $default['category'];
+		}
+		if ( empty( $instance['showposts'] ) ) {
+			$instance['showposts'] = $default['showposts'];
+		}
+		if ( empty( $instance['excerptlength'] ) ) {
+			$instance['excerptlength'] = $default['excerptlength'];
+		}
+		if ( empty( $instance['thumbnail'] ) ) {
+			$instance['thumbnail'] = $default['thumbnail'];
+		}
+		if ( empty( $instance['thumbnailsize'] ) ) {
+			$instance['thumbnailsize'] = $default['thumbnailsize'];
+		}
+		if ( empty( $instance['archiveurl'] ) ) {
+			$instance['archiveurl'] = $default['archiveurl'];
+		}
+		
+		global $thumbnailsizes;
+		global $posttypes;
+		global $categories;
+		$thumbnailsizes = get_intermediate_image_sizes();
+		$posttypes = get_post_types( array('public' => true) , 'names' );
+		$catargs = array(
+			'type'			=> 'post',
+			'child_of'		=> 0,
+			'parent'		=> '',
+			'orderby'		=> 'name',
+			'order'			=> 'ASC',
+			'hide_empty'	=> 1,
+			'hierarchical'	=> 1,
+			'exclude'		=> '',
+			'include'		=> '',
+			'number'		=> '',
+			'taxonomy'		=> 'category',
+			'pad_counts'	=> false 
+		); 
+		$categories = get_categories( $catargs );
+		
 		// Display the admin form
 		include( plugin_dir_path(__FILE__) . '/views/admin.php' );
 
@@ -157,9 +205,12 @@ class Widget_News_Scroller extends WP_Widget {
 	 * Loads the Widget's text domain for localization and translation.
 	 */
 	public function widget_textdomain() {
+		
+		$domain = 'widget-news-scroller';
+		// load_textdomain( $domain, trailingslashit( WP_LANG_DIR ) . $domain . '/' . $domain . '-' . $locale . '.mo' );
+		load_plugin_textdomain( $domain, false, dirname( plugin_basename( __FILE__ ) ) . '/lang/' );
 
-		// TODO be sure to change 'widget-name' to the name of *your* plugin
-		load_plugin_textdomain( 'widget-news-scroller', false, plugin_dir_path( __FILE__ ) . '/lang/' );
+	
 
 	} // end widget_textdomain
 
@@ -169,7 +220,7 @@ class Widget_News_Scroller extends WP_Widget {
 	 * @param		boolean	$network_wide	True if WPMU superadmin uses "Network Activate" action, false if WPMU is disabled or plugin is activated on an individual blog.
 	 */
 	public function activate( $network_wide ) {
-
+		
 	} // end activate
 
 	/**
@@ -186,7 +237,6 @@ class Widget_News_Scroller extends WP_Widget {
 	 */
 	public function register_admin_styles() {
 
-		// TODO:	Change 'widget-name' to the name of your plugin
 		wp_enqueue_style( 'widget-news-scroller-admin-styles', plugins_url( 'widget-news-scroller/css/admin.css' ) );
 
 	} // end register_admin_styles
@@ -196,7 +246,6 @@ class Widget_News_Scroller extends WP_Widget {
 	 */
 	public function register_admin_scripts() {
 
-		// TODO:	Change 'widget-name' to the name of your plugin
 		wp_enqueue_script( 'widget-news-scroller-admin-script', plugins_url( 'widget-news-scroller/js/admin.js' ), array('jquery') );
 
 	} // end register_admin_scripts
@@ -206,7 +255,6 @@ class Widget_News_Scroller extends WP_Widget {
 	 */
 	public function register_widget_styles() {
 
-		// TODO:	Change 'widget-name' to the name of your plugin
 		wp_enqueue_style( 'widget-news-scroller-widget-styles', plugins_url( 'widget-news-scroller/css/widget.css' ) );
 
 	} // end register_widget_styles
@@ -216,13 +264,14 @@ class Widget_News_Scroller extends WP_Widget {
 	 */
 	public function register_widget_scripts() {
 
-		// TODO:	Change 'widget-name' to the name of your plugin
 		wp_enqueue_script( 'jquery.carouFredSel-6.2.1-packed', plugins_url( 'widget-news-scroller/js/jquery.carouFredSel-6.2.1-packed.js' ), array('jquery') );
-		wp_enqueue_script( 'widget-news-scroller-script', plugins_url( 'widget-news-scroller/js/widget.js' ), array('jquery') );
+	//	wp_enqueue_script( 'widget-news-scroller-script', plugins_url( 'widget-news-scroller/js/widget.js' ), array('jquery') );
+		
+		//$params = array('number' => $this->number,);
+		//wp_localize_script( 'widget-news-scroller-script', 'scrollerparam', $params );
 
 	} // end register_widget_scripts
 
 } // end class
 
-// TODO:	Remember to change 'Widget_Name' to match the class name definition
 add_action( 'widgets_init', create_function( '', 'register_widget("Widget_News_Scroller");' ) );

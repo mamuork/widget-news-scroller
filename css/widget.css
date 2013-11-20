@@ -17,3 +17,19 @@ li.wns-item{
 	margin-bottom: 10px;
 	clear: both;
 }
+
+.wns-item-img img{
+	max-width: 100%;
+}
+
+.wns-archiveurl{
+	float: right;
+}
+
+.wns-prev{
+	margin-right: 10px;
+}
+
+.wns-item-content{
+	margin-bottom: 10px;
+}

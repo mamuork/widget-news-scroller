@@ -1,7 +1,15 @@
-<div id="widget-news-scroller" class="widget-news-scroller">
+<div id="widget-news-scroller-<?php echo $this->number; ?>" class="widget-news-scroller">
+<?php 
+	if( !empty($instance[ 'title' ]) )
+		echo '<h3>' . $instance['title'] . '</h3>';
+?>
+
 <ul>
 <?php
-	$args = array('showposts' => $instance['showposts'], 'post_type' => 'post');
+	if( !empty($instance[ 'category' ]) && 'post' == $instance['posttype'] )
+		$args = array('showposts' => $instance['showposts'], 'post_type' => 'post', 'cat' =>  $instance['category'] );
+	else
+		$args = array('showposts' => $instance['showposts'], 'post_type' => $instance['posttype'] );	
 	$the_query = new WP_Query( $args );
 	while ( $the_query->have_posts() ) : $the_query->the_post(); 
 ?>
@@ -21,17 +29,41 @@
 		}
 	?>
 	<div class="wns-item-content">
-		<?php the_title(); ?>
-		<?php the_excerpt(); ?>
+		<h4><a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_title(); ?></a></h4>
+		<?php echo get_custom_excerpt( $instance['excerptlength'] ); ?>
 	</div><!-- item-content -->
 </li><!-- item -->
 <?php
 endwhile; // End the loop.
-wp_reset_postdata();
+wp_reset_query();
 ?>
 </ul>
-<a id="prev" class="wns-prev" href="javascript:void(0)" title="<?php _e( '&lt; prev', 'widget-news-scroller' ) ?>"><?php _e( '&lt; prev', 'widget-news-scroller' ) ?></a>
-<a id="next" class="wns-next" href="javascript:void(0)" title="<?php _e( 'next &gt;', 'widget-news-scroller' ) ?>"><?php _e( 'next &gt;', 'widget-news-scroller' ) ?></a>
+<a id="prev-<?php echo $this->number; ?>" class="wns-prev" href="javascript:void(0)" title="<?php _e( '&lt; prev', 'widget-news-scroller' ) ?>"><?php _e( '&lt; prev', 'widget-news-scroller' ) ?></a>
+<a id="next-<?php echo $this->number; ?>" class="wns-next" href="javascript:void(0)" title="<?php _e( 'next &gt;', 'widget-news-scroller' ) ?>"><?php _e( 'next &gt;', 'widget-news-scroller' ) ?></a>
+<?php if( !empty( $instance['archiveurl'] ) ): ?>
+	<a id="archiveurl-<?php echo $this->number; ?>" class="wns-archiveurl" href="<?php echo $instance['archiveurl']; ?>" title="<?php _e( 'Go to archive &gt;', 'widget-news-scroller' ) ?>"><?php _e( 'Go to archive &gt;', 'widget-news-scroller' ) ?></a>
+<?php endif; ?>
+
+
 </div><!-- #widget-news-scroller -->
 
-<?php print_r($instance); ?>
+<script type="text/javascript">
+jQuery( "document" ).ready( function($){
+	
+		/*	CarouFredSel: a circular, responsive jQuery carousel.
+			Configuration created by the "Configuration Robot"
+			at caroufredsel.dev7studios.com
+		*/
+		jQuery("#<?php echo $this->id; ?> ul").carouFredSel({
+			circular: false,
+			infinite: false,
+			responsive: true,
+			items: {
+				visible: 1
+			},
+			auto: false,
+			prev: "#prev-<?php echo $this->number; ?>",
+			next: "#next-<?php echo $this->number; ?>"
+		});
+	});	
+</script>

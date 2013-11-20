@@ -1,11 +1,13 @@
+/*
 (function ($) {
 	"use strict";
 	$(function () {
+	
 		/*	CarouFredSel: a circular, responsive jQuery carousel.
 			Configuration created by the "Configuration Robot"
 			at caroufredsel.dev7studios.com
-		*/
-		$("#widget-news-scroller ul").carouFredSel({
+		
+		$(".widget-news-scroller ul").carouFredSel({
 			circular: false,
 			infinite: false,
 			responsive: true,
@@ -13,8 +15,10 @@
 				visible: 1
 			},
 			auto: false,
-			prev: "#prev",
-			next: "#next"
+			prev: ".wns-prev",
+			next: ".wns-next"
 		});
 	});
 }(jQuery));
+
+*/
